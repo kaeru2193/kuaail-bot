@@ -1,0 +1,14 @@
+[
+  {
+    "cmd": "countup",
+    "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\countup.js"
+  },
+  {
+    "cmd": "crossgame",
+    "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\crossgame.js"
+  },
+  {
+    "cmd": "frog",
+    "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\frog.js"
+  }
+]
