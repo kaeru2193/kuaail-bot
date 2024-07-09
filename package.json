@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "ts-node src/main.ts",
-    "build": "tsc -p . && node build/tools/commands-indexer.js",
+    "build": "tsc && node build/tools/commands-indexer.js",
     "start": "node build/main.js",
     "compile": "tsc -p .",
     "register": "node tools/deploy-commands.js"
@@ -13,7 +13,7 @@
   "keywords": [],
   "author": "kaeru2193",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "discord.js": "^14.15.2",
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
