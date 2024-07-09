@@ -18,7 +18,8 @@
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
-    "typescript": "^5.4.5"
+    "tsc": "^2.0.4",
+    "typescript": "^5.5.3"
   },
   "engines": {
     "node": "18.x"

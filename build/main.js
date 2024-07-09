@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,14 +24,14 @@ client.once(discord_js_1.Events.ClientReady, c => {
     console.log(`${c.user.tag}でログインしました。`);
 });
 client.login(TOKEN);
-client.on(discord_js_1.Events.MessageCreate, async (message) => {
+client.on(discord_js_1.Events.MessageCreate, (message) => __awaiter(void 0, void 0, void 0, function* () {
     if (message.author.bot)
         return; //bot自身の発言を無視
     if (message.content.startsWith(";"))
         return; //;で始まる内容はコメントであるため無視
     const channelID = getID(message); //送信されたチャンネルを取得
     if (dataStorage.hasOwnProperty(channelID)) {
-        const data = await (0, command_1.app)(message, dataStorage[channelID]); //実行と同時に返り値も取得: [コマンド名, 保存用データ] の形式
+        const data = yield (0, command_1.app)(message, dataStorage[channelID]); //実行と同時に返り値も取得: [コマンド名, 保存用データ] の形式
         if (data) {
             dataStorage[channelID] = { status: data[0], data: data[1] }; //コマンド用データを保存
         }
@@ -34,12 +43,12 @@ client.on(discord_js_1.Events.MessageCreate, async (message) => {
     }
     if (!message.content.startsWith(prefix))
         return; //bot宛でなければ無視
-    const data = await (0, command_1.command)(message); //実行と同時に返り値も取得: [コマンド名, 保存用データ] の形式
+    const data = yield (0, command_1.command)(message); //実行と同時に返り値も取得: [コマンド名, 保存用データ] の形式
     if (data) {
         dataStorage[channelID] = { status: data[0], data: data[1] }; //コマンド用データを保存
     }
     console.log(dataStorage);
-});
+}));
 const getID = (message) => {
     return `${message.guildId}/${message.channelId}`;
 };
