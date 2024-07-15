@@ -4,7 +4,12 @@ import fs from "fs"
 const commandData: any[] = JSON.parse(fs.readFileSync("build/index.json", 'utf8'))
 
 export const command = async (message: Message) => { //初回呼びかけの処理
-    const [cmd, ...args] = message.content.split(" ").slice(1) //スペースで区切り、bot呼び出し部分は切り落とし
+    const [cmd, ...args] = message.content.replace(/\s+/g, " ").split(" ").slice(1) //複数スペースを削除してからスペースで区切り、bot呼び出し部分は切り落とし
+
+    if (!cmd) { //呼びかけ単体
+        await message.reply('こんにちは！***之機 (kua1ail2)***だよ！\n`!k help`でbotの説明を表示できます。')
+        return
+    }
     
     const cmdArr = commandData.filter((c: any) => c.cmd == cmd)
 
@@ -22,7 +27,7 @@ export const command = async (message: Message) => { //初回呼びかけの処�
             return [cmd, data] //コマンド名(ステータス用)とデータを上申
         }
     } catch (error) {
-        internalError(message)
+        internalError(message, error)
         return
     }
 }
@@ -31,7 +36,7 @@ export const app = async (message: Message, previousData: any) => { //アプリ�
     const cmdArr = commandData.filter((c: any) => c.cmd == previousData.status)
 
     if (cmdArr.length <= 0) { //指定されたコマンドが存在しない場合（ありえないはずなのでエラー）
-        internalError(message)
+        internalError(message, "指定されたコマンドが存在しません")
         return
     }
 
@@ -44,19 +49,26 @@ export const app = async (message: Message, previousData: any) => { //アプリ�
             return [previousData.status, data] //コマンド名とデータを上申
         }
     } catch (error) {
-        appInternalError(message)
+        appInternalError(message, error)
         return
     }
+}
+
+export const getHelp = async () => { //ヘルプを取得
+    const helps = commandData.map(c => {return {cmd: c.cmd, help: c.help}})
+    return helps
 }
 
 const notExistCommand = async (message: Message) => {
     await message.reply('存在しないコマンドです。')
 }
 
-const internalError = async (message: Message) => {
+const internalError = async (message: Message, e: any) => {
     await message.reply('内部エラーです。必要な場合は管理者にお問い合わせください。')
+    console.log(e)
 }
 
-const appInternalError = async (message: Message) => {
+const appInternalError = async (message: Message, e: any) => {
     await message.reply('内部エラーが発生したため、アプリを終了します。必要な場合は管理者にお問い合わせください。')
+    console.log(e)
 }

@@ -1,80 +1,78 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
+const levels = {
+    "easy": [6, 5],
+    "normal": [8, 10],
+    "hard": [8, 20],
+    "taing": [8, 30]
+};
 module.exports = {
     cmd: "crossgame",
-    execute: (message, args) => __awaiter(void 0, void 0, void 0, function* () {
-        const [size, turns] = args.map(a => Number(a));
-        if (isNaN(size) || isNaN(turns)) {
-            yield message.reply('引数に数値を入力してください。');
+    help: "`!k crossgame <難易度>`\nボードゲーム「交返楽」を開始します。難易度はeasy, normal, hardのいずれかから選択可能で、盤の全面を黒に揃えることでクリアとなります。\n`<行数> <列数>`の形式でひっくり返すコマを指定できます。また、行数と列数はともに1から、左上を起点に数えられます。複数手をまとめて`<行数1> <列数1> <行数2> <列数2>...`のように指定することも可能です。",
+    execute: async (message, args) => {
+        const level = args[0];
+        if (!Object.hasOwn(levels, level)) {
+            await message.reply('難易度を正しく入力してください。');
             return;
         }
-        else if (!Number.isInteger(size) || !Number.isInteger(turns)) {
-            yield message.reply('引数に整数を入力してください。');
-            return;
-        }
-        else if (size < 3 || size > 20 || turns < 1 || turns > 100) {
-            yield message.reply('盤面サイズは3~20、ターン数は1~100で入力してください。');
-            return;
-        }
-        const board = makeBoard(size, turns);
-        yield message.reply(`ゲーム開始！\n${toBoardText(board)}`);
-        const messages = yield message.channel.messages.fetch({ limit: 1 });
-        return { board: board, msg: messages.get([...messages.keys()][0]) };
-    }),
-    app: (message, data) => __awaiter(void 0, void 0, void 0, function* () {
+        const param = levels[level];
+        const board = makeBoard(param[0], param[1]);
+        await message.reply(`ゲーム開始！\n${toBoardText(board)}`);
+        const messages = await message.channel.messages.fetch({ limit: 1 });
+        return { board: board, msg: messages.get([...messages.keys()][0]), turns: 0 };
+    },
+    app: async (message, data) => {
         if (message.content == "stop") { //stopと入力されたらコマンド終了
-            yield message.reply('アプリを中断しました。');
+            await message.reply('アプリを中断しました。');
             return;
         }
-        const [row, col] = message.content.split(" ").map(a => Number(a));
-        if (isNaN(row) || isNaN(col)) {
-            yield message.reply('引数に数値を入力してください。');
+        const moves = message.content.split(" ").map(a => Number(a));
+        if (moves.some(m => isNaN(m))) {
+            await message.reply('引数に数値を入力してください。');
             return data;
         }
-        else if (!Number.isInteger(row) || !Number.isInteger(col)) {
-            yield message.reply('引数に整数を入力してください。');
+        else if (moves.some(m => !Number.isInteger(m))) {
+            await message.reply('引数に整数を入力してください。');
             return data;
         }
         const board = data.board;
-        const res = turnCross(board, row - 1, col - 1);
-        if (res == "rangeError") {
-            yield message.reply('範囲内の数値を入力してください。');
-            return data;
+        let turns = data.turns;
+        for (let i = 1; i <= moves.length / 2; i++) {
+            const res = turnCross(board, moves[i * 2 - 2] - 1, moves[i * 2 - 1] - 1);
+            if (res == "rangeError") {
+                await message.reply('範囲内の数値を入力してください。');
+                return data;
+            }
+            turns++;
         }
+        data.board = board;
+        data.turns = turns;
         if (isClear(board)) {
-            yield data.msg.edit(`クリア！おめでとう！\n${toBoardText(board)}`);
+            await data.msg.edit(`:tada: クリア！おめでとう！ :tada:\nクリア手数: ${turns}\n${toBoardText(board)}`);
             return;
         }
         else {
-            yield data.msg.edit(`盤面:\n${toBoardText(board)}`);
+            await data.msg.edit(`盤面:\n${toBoardText(board)}`);
         }
-        data.board = board;
         return data;
-    }),
+    },
 };
 const makeBoard = (size, turns) => {
     const blankBoard = [...Array(size)].map(() => ([...Array(size)].map(() => 1)));
-    console.log(blankBoard);
+    const toCheck = [...Array(size ** 2)].map((_, idx) => idx); //1度返した場所の記録用として、連番の配列を作成
     for (let i = 0; i < turns; i++) {
-        const row = Math.floor(Math.random() * size);
-        const col = Math.floor(Math.random() * size);
-        console.log(row, col);
+        const remain = toCheck.filter(n => n >= 0); //まだ使われていない番号
+        const num = remain[Math.floor(Math.random() * remain.length)]; //残りからランダムに選択
+        const row = Math.floor(num / size);
+        const col = num % size;
+        toCheck[num] = -1; //使われた番号は-1で置き換え
         turnCross(blankBoard, row, col);
     }
     return blankBoard;
 };
 const turnCross = (board, row, col) => {
     const boardSize = board.length;
-    if (row <= 0 || row > boardSize || col <= 0 || col > boardSize) {
+    if (row < 0 || row >= boardSize || col < 0 || col >= boardSize) {
         return "rangeError";
     }
     turnPiece(board, row, col);

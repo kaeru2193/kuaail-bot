@@ -1,14 +1,27 @@
 [
   {
     "cmd": "countup",
+    "help": "`!k countup`\nbotによる数え上げを開始します。メッセージを送信する度にカウントが増えます。",
     "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\countup.js"
   },
   {
     "cmd": "crossgame",
+    "help": "`!k crossgame <難易度>`\nボードゲーム「交返楽」を開始します。難易度はeasy, normal, hardのいずれかから選択可能で、盤の全面を黒に揃えることでクリアとなります。\n`<行数> <列数>`の形式でひっくり返すコマを指定できます。また、行数と列数はともに1から、左上を起点に数えられます。複数手をまとめて`<行数1> <列数1> <行数2> <列数2>...`のように指定することも可能です。",
     "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\crossgame.js"
   },
   {
     "cmd": "frog",
+    "help": "`!k frog`\nbotがかえるのなきまねをします。",
     "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\frog.js"
+  },
+  {
+    "cmd": "funqo",
+    "help": "`!k frog`\nbotがかえるのなきまねをします。",
+    "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\funqo.js"
+  },
+  {
+    "cmd": "help",
+    "help": "`!k help (<コマンド>)`\nこのコマンドです。botの機能について説明します。特定のコマンドについてのみの説明も可能です。",
+    "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\help.js"
   }
 ]

@@ -1,26 +1,29 @@
 import { Message } from "discord.js";
 
+const levels: any = { //難易度
+    "easy": [6, 5],
+    "normal": [8, 10],
+    "hard": [8, 20],
+    "taing": [8, 30]
+}
+
 module.exports = {
 	cmd: "crossgame",
+    help: "`!k crossgame <難易度>`\nボードゲーム「交返楽」を開始します。難易度はeasy, normal, hardのいずれかから選択可能で、盤の全面を黒に揃えることでクリアとなります。\n`<行数> <列数>`の形式でひっくり返すコマを指定できます。また、行数と列数はともに1から、左上を起点に数えられます。複数手をまとめて`<行数1> <列数1> <行数2> <列数2>...`のように指定することも可能です。",
 	execute: async (message: Message, args: string[]) => {
-        const [size, turns] = args.map(a => Number(a))
-        if (isNaN(size) || isNaN(turns)) {
-            await message.reply('引数に数値を入力してください。')
-            return
-        } else if (!Number.isInteger(size) || !Number.isInteger(turns)) {
-            await message.reply('引数に整数を入力してください。')
-            return
-        } else if (size < 3 || size > 20 || turns < 1 || turns > 100) {
-            await message.reply('盤面サイズは3~20、ターン数は1~100で入力してください。')
+        const level = args[0]
+        if (!Object.hasOwn(levels, level)) {
+            await message.reply('難易度を正しく入力してください。')
             return
         }
+        const param = levels[level]
 
-        const board = makeBoard(size, turns)
+        const board = makeBoard(param[0], param[1])
         await message.reply(`ゲーム開始！\n${toBoardText(board)}`)
 
         const messages = await message.channel.messages.fetch({ limit: 1 })
 		
-        return {board: board, msg: messages.get([...messages.keys()][0])}
+        return {board: board, msg: messages.get([...messages.keys()][0]), turns: 0}
 	},
     app: async (message: Message, data: any) => {
         if (message.content == "stop") { //stopと入力されたらコマンド終了
@@ -28,31 +31,37 @@ module.exports = {
             return
         }
 
-        const [row, col] = message.content.split(" ").map(a => Number(a))
-        if (isNaN(row) || isNaN(col)) {
+        const moves = message.content.split(" ").map(a => Number(a))
+        if (moves.some(m => isNaN(m))) {
             await message.reply('引数に数値を入力してください。')
             return data
-        } else if (!Number.isInteger(row) || !Number.isInteger(col)) {
+        } else if (moves.some(m => !Number.isInteger(m))) {
             await message.reply('引数に整数を入力してください。')
             return data
         }
 
         const board = data.board
+        let turns = data.turns
 
-        const res = turnCross(board, row - 1, col - 1)
-        if (res == "rangeError") {
-            await message.reply('範囲内の数値を入力してください。')
-            return data
+        for (let i = 1; i <= moves.length / 2; i++) {
+            const res = turnCross(board, moves[i * 2 - 2] - 1, moves[i * 2 - 1] - 1)
+            if (res == "rangeError") {
+                await message.reply('範囲内の数値を入力してください。')
+                return data
+            }
+            turns++
         }
 
+        data.board = board
+        data.turns = turns
+
         if (isClear(board)) {
-            await data.msg.edit(`クリア！おめでとう！\n${toBoardText(board)}`)
+            await data.msg.edit(`:tada: クリア！おめでとう！ :tada:\nクリア手数: ${turns}\n${toBoardText(board)}`)
             return
         } else {
             await data.msg.edit(`盤面:\n${toBoardText(board)}`)
         }
-
-        data.board = board
+        
         return data
 	},
 }
@@ -61,12 +70,17 @@ const makeBoard = (size: number, turns: number) => {
     const blankBoard = [...Array(size)].map(() => (
         [...Array(size)].map(() => 1)
     ))
-    console.log(blankBoard)
-    for (let i = 0; i < turns; i++) {
-        const row = Math.floor(Math.random() * size)
-        const col = Math.floor(Math.random() * size)
 
-        console.log(row, col)
+    const toCheck = [...Array(size ** 2)].map((_, idx) => idx) //1度返した場所の記録用として、連番の配列を作成
+
+    for (let i = 0; i < turns; i++) {
+        const remain = toCheck.filter(n => n >= 0) //まだ使われていない番号
+        const num = remain[Math.floor(Math.random() * remain.length)] //残りからランダムに選択
+
+        const row = Math.floor(num / size)
+        const col = num % size
+
+        toCheck[num] = -1 //使われた番号は-1で置き換え
 
         turnCross(blankBoard, row, col)
     }
@@ -75,7 +89,7 @@ const makeBoard = (size: number, turns: number) => {
 
 const turnCross = (board: number[][], row: number, col: number) => {
     const boardSize = board.length
-    if (row <= 0 || row > boardSize || col <= 0 || col > boardSize) {
+    if (row < 0 || row >= boardSize || col < 0 || col >= boardSize) {
         return "rangeError"
     }
 

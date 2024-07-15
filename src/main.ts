@@ -1,7 +1,5 @@
 import { GatewayIntentBits, Client, Events, Collection, Message } from 'discord.js'
 import dotenv from 'dotenv'
-import fs from "fs"
-import path from "path"
 import { command, app } from './lib/command'
 
 dotenv.config()
@@ -22,17 +20,17 @@ client.login(TOKEN);
 client.on(Events.MessageCreate, async (message: Message) => {
     if (message.author.bot) return //bot自身の発言を無視
 	if (message.content.startsWith(";")) return //;で始まる内容はコメントであるため無視
+	if (message.system) return //システムメッセージを無視
 	
 	const channelID = getID(message) //送信されたチャンネルを取得
 
-	if (dataStorage.hasOwnProperty(channelID)) {
+	if (dataStorage.hasOwnProperty(channelID)) { //アプリ起動中の場合、bot宛でなくとも反応
 		const data = await app(message, dataStorage[channelID]) //実行と同時に返り値も取得: [コマンド名, 保存用データ] の形式
 		if (data) {
 			dataStorage[channelID] = {status: data[0], data: data[1]} //コマンド用データを保存
 		} else { //返り値なし、つまりコマンド終了
 			delete dataStorage[channelID] //コマンド用データを削除
 		}
-		console.log(dataStorage)
 		return
 	}
 
@@ -42,8 +40,6 @@ client.on(Events.MessageCreate, async (message: Message) => {
 	if (data) {
 		dataStorage[channelID] = {status: data[0], data: data[1]} //コマンド用データを保存
 	}
-
-	console.log(dataStorage)
 })
 
 const getID = (message: Message) => {

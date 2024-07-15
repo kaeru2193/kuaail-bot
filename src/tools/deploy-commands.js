@@ -11,6 +11,8 @@ const GUILD_ID = process.env.GUILD_ID
 
 if (!TOKEN || !CLIENT_ID || !GUILD_ID) {throw Error("envが正しく指定されていません。")}
 
+/*
+
 const commandsPath = path.join(__dirname, '../build/commands')
 
 const commands = []
@@ -20,19 +22,19 @@ for (const file of commandFiles) {
 	const command = require(path.join(commandsPath, `./${file}`))
 	commands.push(command.data.toJSON())
 }
+*/
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 (async () => {
 	try {
-		console.log(`${commands.length} 個のアプリケーションコマンドを登録します。`)
+		console.log(`個のアプリケーションコマンドを登録します。`)
 
-		const data = await rest.put(
-			Routes.applicationCommands(CLIENT_ID),
-			{ body: commands },
-		);
+		const data = await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: [] })
+		.then(() => console.log('Successfully registered application commands.'))
+		.catch(console.error);
 
-		console.log(`${data.length} 個のアプリケーションコマンドを登録しました。`)
+		console.log(`個のアプリケーションコマンドを登録しました。`)
 	} catch (error) {
 		console.error(error)
 	}

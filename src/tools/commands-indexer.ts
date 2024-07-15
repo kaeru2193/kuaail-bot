@@ -11,6 +11,7 @@ for (const file of commandFiles) {
 	const command = require(commandFilePath)
 	commands.push({
         cmd: command.cmd,
+        help: command.help,
         path: commandFilePath
     })
 }
