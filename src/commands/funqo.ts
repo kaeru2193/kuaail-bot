@@ -4,7 +4,7 @@ import fs from "fs"
 
 module.exports = {
 	cmd: "funqo",
-	help: "`!k frog`\nbotがかえるのなきまねをします。",
+	help: "`!k funqo <文字列>`\n入力された文字列を雰字フォントで書記します。",
 	execute: async (message: Message, args: string[]) => {
 		if (!args[0]) {
             await message.reply("書記する文字列を指定してください。")

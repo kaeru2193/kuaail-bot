@@ -16,7 +16,7 @@
   },
   {
     "cmd": "funqo",
-    "help": "`!k frog`\nbotがかえるのなきまねをします。",
+    "help": "`!k funqo <文字列>`\n入力された文字列を雰字フォントで書記します。",
     "path": "C:\\Users\\Owner\\docs\\25_codes\\35_For-community\\discord-new-bot\\build\\commands\\funqo.js"
   },
   {

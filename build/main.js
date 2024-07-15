@@ -31,7 +31,6 @@ client.on(discord_js_1.Events.MessageCreate, async (message) => {
         else { //返り値なし、つまりコマンド終了
             delete dataStorage[channelID]; //コマンド用データを削除
         }
-        console.log(dataStorage);
         return;
     }
     if (!message.content.startsWith(prefix))
@@ -40,7 +39,6 @@ client.on(discord_js_1.Events.MessageCreate, async (message) => {
     if (data) {
         dataStorage[channelID] = { status: data[0], data: data[1] }; //コマンド用データを保存
     }
-    console.log(dataStorage);
 });
 const getID = (message) => {
     return `${message.guildId}/${message.channelId}`;

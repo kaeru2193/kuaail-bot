@@ -7,7 +7,6 @@ exports.getHelp = exports.app = exports.command = void 0;
 const fs_1 = __importDefault(require("fs"));
 const commandData = JSON.parse(fs_1.default.readFileSync("build/index.json", 'utf8'));
 const command = async (message) => {
-    console.log(message.content.replace(/\s+/g, " "));
     const [cmd, ...args] = message.content.replace(/\s+/g, " ").split(" ").slice(1); //複数スペースを削除してからスペースで区切り、bot呼び出し部分は切り落とし
     if (!cmd) { //呼びかけ単体
         await message.reply('こんにちは！***之機 (kua1ail2)***だよ！\n`!k help`でbotの説明を表示できます。');

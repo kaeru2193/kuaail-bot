@@ -7,14 +7,14 @@ const canvas_1 = require("canvas");
 const fs_1 = __importDefault(require("fs"));
 module.exports = {
     cmd: "funqo",
-    help: "`!k frog`\nbotがかえるのなきまねをします。",
+    help: "`!k funqo <文字列>`\n入力された文字列を雰字フォントで書記します。",
     execute: async (message, args) => {
         if (!args[0]) {
             await message.reply("書記する文字列を指定してください。");
             return;
         }
         const text = args[0];
-        //registerFont('./assets/fonts/Phun-Sans.ttf', { family: 'PhunSans Sans-Rounded' });
+        (0, canvas_1.registerFont)('./assets/fonts/Phun-Sans.ttf', { family: 'PhunSans Sans-Rounded' });
         const width = text.length * 50 + 50;
         const scale = width <= 1000 ? 1 : 1000 / width;
         const canvas = (0, canvas_1.createCanvas)(width * scale, 100 * scale);
