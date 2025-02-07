@@ -14,7 +14,7 @@ for (const file of commandFiles) {
     commands.push({
         cmd: command.cmd,
         help: command.help,
-        path: commandFilePath
+        path: file
     });
 }
 fs_1.default.writeFileSync(path_1.default.join(__dirname, '../index.json'), JSON.stringify(commands, null, 2));

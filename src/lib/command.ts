@@ -1,7 +1,9 @@
 import { Message } from "discord.js"
 import fs from "fs"
+import path from "path"
 
 const commandData: any[] = JSON.parse(fs.readFileSync("build/index.json", 'utf8'))
+const commandsPath = path.join(__dirname, '../commands')
 
 export const command = async (message: Message) => { //初回呼びかけの処理
     const [cmd, ...args] = message.content.replace(/\s+/g, " ").split(" ").slice(1) //複数スペースを削除してからスペースで区切り、bot呼び出し部分は切り落とし
@@ -18,7 +20,8 @@ export const command = async (message: Message) => { //初回呼びかけの処�
         return
     }
 
-    const cmdModule = require(cmdArr[0].path)
+    const cmdPath = path.join(commandsPath, `./${cmdArr[0].path}`)
+    const cmdModule = require(cmdPath)
 
     try {
         const data = await cmdModule.execute(message, args) //実行と同時に返り値を取得
@@ -40,7 +43,8 @@ export const app = async (message: Message, previousData: any) => { //アプリ�
         return
     }
 
-    const cmdModule = require(cmdArr[0].path)
+    const cmdPath = path.join(commandsPath, `./${cmdArr[0].path}`)
+    const cmdModule = require(cmdPath)
     
     try {
         const data = await cmdModule.app(message, previousData.data) //実行と同時に返り値を取得

@@ -12,7 +12,7 @@ for (const file of commandFiles) {
 	commands.push({
         cmd: command.cmd,
         help: command.help,
-        path: commandFilePath
+        path: file
     })
 }
 

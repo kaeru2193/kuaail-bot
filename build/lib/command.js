@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getHelp = exports.app = exports.command = void 0;
 const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const commandData = JSON.parse(fs_1.default.readFileSync("build/index.json", 'utf8'));
+const commandsPath = path_1.default.join(__dirname, '../commands');
 const command = async (message) => {
     const [cmd, ...args] = message.content.replace(/\s+/g, " ").split(" ").slice(1); //複数スペースを削除してからスペースで区切り、bot呼び出し部分は切り落とし
     if (!cmd) { //呼びかけ単体
@@ -17,7 +19,8 @@ const command = async (message) => {
         notExistCommand(message);
         return;
     }
-    const cmdModule = require(cmdArr[0].path);
+    const cmdPath = path_1.default.join(commandsPath, `./${cmdArr[0].path}`);
+    const cmdModule = require(cmdPath);
     try {
         const data = await cmdModule.execute(message, args); //実行と同時に返り値を取得
         if (data) {
@@ -36,7 +39,8 @@ const app = async (message, previousData) => {
         internalError(message, "指定されたコマンドが存在しません");
         return;
     }
-    const cmdModule = require(cmdArr[0].path);
+    const cmdPath = path_1.default.join(commandsPath, `./${cmdArr[0].path}`);
+    const cmdModule = require(cmdPath);
     try {
         const data = await cmdModule.app(message, previousData.data); //実行と同時に返り値を取得
         if (data) {

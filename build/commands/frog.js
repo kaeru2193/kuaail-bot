@@ -4,6 +4,6 @@ module.exports = {
     cmd: "frog",
     help: "`!k frog`\nbotがかえるのなきまねをします。",
     execute: async (message) => {
-        await message.reply('**分分 (gùalgùal)**');
+        await message.reply('**分分 (gùalgùal) ！**');
     },
 };
