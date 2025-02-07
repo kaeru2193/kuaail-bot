@@ -14,7 +14,7 @@
   "author": "kaeru2193",
   "license": "ISC",
   "dependencies": {
-    "canvas": "^2.11.2",
+    "canvas": "^3.0.1",
     "discord.js": "^14.15.2",
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",

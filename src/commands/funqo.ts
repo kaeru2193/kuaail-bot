@@ -13,7 +13,7 @@ module.exports = {
 
         const text = args[0]
 
-        registerFont('./assets/fonts/Phun-Sans.ttf', { family: 'PhunSans Sans-Rounded' });
+        //registerFont('./assets/fonts/Phun-Sans.ttf', { family: 'PhunSans Sans-Rounded' });
 
         const width = text.length * 50 + 50
         const scale = width <= 1000? 1: 1000 / width
@@ -28,7 +28,7 @@ module.exports = {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.fillStyle = '#000000'
-        ctx.font = `${Math.floor(50 * scale)}px "PhunSans Sans-Rounded"`;
+        ctx.font = `${Math.floor(50 * scale)}px "Phun Sans Rounded Regular"`;
         ctx.textAlign = "center"
         ctx.textBaseline = "middle"
         ctx.fillText(args[0], canvas.width / 2, canvas.height / 2);

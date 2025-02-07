@@ -14,7 +14,7 @@ module.exports = {
             return;
         }
         const text = args[0];
-        (0, canvas_1.registerFont)('./assets/fonts/Phun-Sans.ttf', { family: 'PhunSans Sans-Rounded' });
+        //registerFont('./assets/fonts/Phun-Sans.ttf', { family: 'PhunSans Sans-Rounded' });
         const width = text.length * 50 + 50;
         const scale = width <= 1000 ? 1 : 1000 / width;
         const canvas = (0, canvas_1.createCanvas)(width * scale, 100 * scale);
@@ -24,7 +24,7 @@ module.exports = {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#000000';
-        ctx.font = `${Math.floor(50 * scale)}px "PhunSans Sans-Rounded"`;
+        ctx.font = `${Math.floor(50 * scale)}px "Phun Sans Rounded Regular"`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(args[0], canvas.width / 2, canvas.height / 2);
