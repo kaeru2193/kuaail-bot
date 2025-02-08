@@ -16,4 +16,4 @@ for (const file of commandFiles) {
     })
 }
 
-fs.writeFileSync(path.join(__dirname, '../index.json'), JSON.stringify(commands, null, 2))
+fs.writeFileSync(path.join(__dirname, '../index.json'), JSON.stringify(commands, null, 2), { flag: "w" })
