@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { createCanvas, registerFont } from 'canvas';
 import fs from "fs"
+import path from "path"
 
 const fonts = [
     {
@@ -38,7 +39,7 @@ module.exports = {
 
         const text = args[0]
 
-        registerFont(`./assets/fonts/${fontData.path}`, { family: fontData.name });
+        registerFont(path.join(__dirname, `../../assets/fonts/${fontData.path}`), { family: fontData.name });
 
         const width = text.length * 50 + 50
         const scale = width <= 1000? 1: 1000 / width //幅が1000pxを超えたら、1000pxに収まるように全体を縮小する
