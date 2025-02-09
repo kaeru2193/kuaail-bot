@@ -26,11 +26,6 @@ module.exports = {
         return {board: board, msg: messages.get([...messages.keys()][0]), turns: 0}
 	},
     app: async (message: Message, data: any) => {
-        if (message.content == "stop") { //stopと入力されたらコマンド終了
-            await message.reply('アプリを中断しました。')
-            return
-        }
-
         const moves = message.content.split(" ").map(a => Number(a))
         if (moves.some(m => isNaN(m))) {
             await message.reply('引数に数値を入力してください。')

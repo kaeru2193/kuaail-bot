@@ -36,6 +36,11 @@ export const command = async (message: Message) => { //初回呼びかけの処�
 }
 
 export const app = async (message: Message, previousData: any) => { //アプリ起動中の処理
+    if (message.content == "stop") { //stopと入力されたらコマンド終了
+        message.reply('アプリを中断しました。')
+        return
+    }
+    
     const cmdArr = commandData.filter((c: any) => c.cmd == previousData.status)
 
     if (cmdArr.length <= 0) { //指定されたコマンドが存在しない場合（ありえないはずなのでエラー）
@@ -64,15 +69,15 @@ export const getHelp = async () => { //ヘルプを取得
 }
 
 const notExistCommand = async (message: Message) => {
-    await message.reply('存在しないコマンドです。')
+    await message.reply(':x: 存在しないコマンドです。')
 }
 
 const internalError = async (message: Message, e: any) => {
-    await message.reply('内部エラーです。必要な場合は管理者にお問い合わせください。')
+    await message.reply(':hot_face: 内部エラーです。必要な場合は管理者にお問い合わせください。')
     console.log(e)
 }
 
 const appInternalError = async (message: Message, e: any) => {
-    await message.reply('内部エラーが発生したため、アプリを終了します。必要な場合は管理者にお問い合わせください。')
+    await message.reply(':hot_face: 内部エラーが発生したため、アプリを終了します。必要な場合は管理者にお問い合わせください。')
     console.log(e)
 }

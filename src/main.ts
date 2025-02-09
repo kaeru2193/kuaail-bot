@@ -5,7 +5,9 @@ import { command, app } from './lib/command'
 dotenv.config()
 
 const TOKEN = process.env.TOKEN
-const prefix = "!k"
+const prefix = process.env.prefix
+
+if (!prefix) throw Error("接頭辞を設定してください。")
 
 let dataStorage: any = {} //データ保存用
 
@@ -35,6 +37,7 @@ client.on(Events.MessageCreate, async (message: Message) => {
 	}
 
     if (!message.content.startsWith(prefix)) return //bot宛でなければ無視
+	if (message.content.split(" ")[0] != prefix) return //空白区切りで接頭辞が一致しない（接頭辞の後ろに空白がない）時も無視
 
 	const data = await command(message) //実行と同時に返り値も取得: [コマンド名, 保存用データ] の形式
 	if (data) {

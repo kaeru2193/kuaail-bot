@@ -16,7 +16,7 @@ const fonts = [
 
 module.exports = {
 	cmd: "funqo",
-	help: "`!k funqo <文字列> (<フォント>)`\n入力された文字列を雰字フォントで書記します。フォントには`psans`または`pdot`を指定可能です。デフォルト値は`sans`です。",
+	help: "`!k funqo <文字列> (<フォント>)`\n入力された文字列を雰字フォントで書記します。フォントには`psans`または`pdot`を指定可能です。デフォルト値は`psans`です。",
 	execute: async (message: Message, args: string[]) => {
 		if (!args[0]) {
             await message.reply("書記する文字列を指定してください。")
@@ -59,7 +59,7 @@ module.exports = {
         ctx.textBaseline = "middle"
         ctx.fillText(args[0], canvas.width / 2, canvas.height / 2);
 
-        const buffer = canvas.toBuffer("image/png")
+        const buffer: any = canvas.toBuffer("image/png")
         fs.writeFileSync("./img/funqo_img.png", buffer, {})
 
         await message.reply({ files: ["./img/funqo_img.png"] })
