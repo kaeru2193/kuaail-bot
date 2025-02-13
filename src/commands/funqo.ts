@@ -11,12 +11,16 @@ const fonts = [
     {
         name: "pdot",
         path: "PhunDot.ttf"
-    }
+    },
+    {
+        name: "tuofaqo",
+        path: "TuoFaQo.ttf"
+    },
 ]
 
 module.exports = {
 	cmd: "funqo",
-	help: "`!k funqo <文字列> (<フォント>)`\n入力された文字列を雰字フォントで書記します。フォントには`psans`または`pdot`を指定可能です。デフォルト値は`psans`です。",
+	help: "`!k funqo <文字列> (<フォント>)`\n入力された文字列を雰字フォントで書記します。フォントには`psans`（ゴシック体）、`pdot`（ドット書体）、`tuofaqo`（桜筆書体）を指定可能です。デフォルト値は`psans`です。",
 	execute: async (message: Message, args: string[]) => {
 		if (!args[0]) {
             await message.reply("書記する文字列を指定してください。")
