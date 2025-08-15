@@ -5,6 +5,7 @@ abspath=`pwd`
 
 mkdir -p "${abspath}/assets/fonts"
 mkdir -p "${abspath}/assets/data"
+mkdir -p "${abspath}/assets/sounds"
 wget https://kaeru2193.github.io/Phun-Resources/font/Phun-Sans/Phun-Sans-Rounded-Regular.ttf -O "${abspath}/assets/fonts/PhunSans.ttf"
 wget https://kaeru2193.github.io/Phun-Resources/font/PhunDot-latest.ttf -O "${abspath}/assets/fonts/PhunDot.ttf"
 wget https://epikijetesantakalu.github.io/phun-tuo/Phun_Tuo.ttf -O "${abspath}/assets/fonts/TuoFaQo.ttf"
