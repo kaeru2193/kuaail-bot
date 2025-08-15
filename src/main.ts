@@ -11,7 +11,7 @@ if (!prefix) throw Error("接頭辞を設定してください。")
 
 let dataStorage: any = {} //データ保存用
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildVoiceStates] });
 
 client.once(Events.ClientReady, c => {
 	console.log(`${c.user.tag}でログインしました。`);

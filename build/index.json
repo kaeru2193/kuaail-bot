@@ -25,6 +25,16 @@
     "path": "help.js"
   },
   {
+    "cmd": "vcjoin",
+    "help": "`!k vcjoin`\nbotがVCに入ってサンプル音楽を再生します。",
+    "path": "vcjoin.js"
+  },
+  {
+    "cmd": "vcleave",
+    "help": "`!k vcleave`\nbotがVCを退出します。",
+    "path": "vcleave.js"
+  },
+  {
     "cmd": "wefuyao",
     "help": "`!k wefuyao`\n雰字の漢字転写から読みを答えるクイズを開始します。回答は数字式雰拼で入力してください。",
     "path": "wefuyao.js"
