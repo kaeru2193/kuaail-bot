@@ -38,5 +38,10 @@
     "cmd": "wefuyao",
     "help": "`!k wefuyao`\n雰字の漢字転写から読みを答えるクイズを開始します。回答は数字式雰拼で入力してください。",
     "path": "wefuyao.js"
+  },
+  {
+    "cmd": "xingxi",
+    "help": "`!k frog`\nbotがかえるのなきまねをします。",
+    "path": "xingxi.js"
   }
 ]

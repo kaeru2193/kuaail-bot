@@ -1,5 +1,6 @@
 #!/bin/sh
 npm run build
+node build/tools/makeLCPhunDict.js
 
 abspath=`pwd`
 
@@ -10,6 +11,7 @@ wget https://kaeru2193.github.io/Phun-Resources/font/Phun-Sans/Phun-Sans-Rounded
 wget https://kaeru2193.github.io/Phun-Resources/font/PhunDot-latest.ttf -O "${abspath}/assets/fonts/PhunDot.ttf"
 wget https://epikijetesantakalu.github.io/phun-tuo/Phun_Tuo.ttf -O "${abspath}/assets/fonts/TuoFaQo.ttf"
 wget https://kaeru2193.github.io/Phun-Resources/dict/phun-dict.json -O "${abspath}/assets/data/phun-dict.json"
+wget https://kaeru2193.github.io/Phun-Resources/dict/phun-example.json -O "${abspath}/assets/data/phun-example.json"
 wget https://amachamusic.chagasi.com/mp3/nichinichikorekoujitsu.mp3 -O "${abspath}/assets/sounds/sample.mp3"
 
 forever start -l "${abspath}/logs/forever.log" -a build/main.js
