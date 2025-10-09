@@ -1,4 +1,4 @@
-import { GatewayIntentBits, Client, Events, Collection, Message } from 'discord.js'
+import { GatewayIntentBits, Client, Events, Collection, Message, Guild } from 'discord.js'
 import dotenv from 'dotenv'
 import { command, app } from './lib/command'
 
@@ -6,8 +6,11 @@ dotenv.config()
 
 const TOKEN = process.env.TOKEN
 const prefix = process.env.prefix
+const ALLOWED_GUILD = process.env.ALLOWED_GUILD?.split(" ")
+const notAllowedMessage = "之機 (kua1ail2) は雰界創作のためのbotです。予期せぬ誤作動を防ぐため、このbotは雰界創作公式サーバー以外ではご利用になれません。ぜひ公式サーバーにお越しいただきご利用ください。このサーバーからは自動的に退出します。👋"
 
 if (!prefix) throw Error("接頭辞を設定してください。")
+if (!ALLOWED_GUILD) throw Error("許可サーバーを設定してください。")
 
 let dataStorage: any = {} //データ保存用
 
@@ -15,9 +18,19 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 client.once(Events.ClientReady, c => {
 	console.log(`${c.user.tag}でログインしました。`);
+	console.log(client.guilds.cache.size)
 });
 
 client.login(TOKEN);
+
+client.on(Events.GuildCreate, async (guild: Guild) => {
+	if (!ALLOWED_GUILD.includes(guild.id)) {
+		if (guild.systemChannel) {
+			await guild.systemChannel.send(notAllowedMessage)
+		}
+		await guild.leave()
+	}
+})
 
 client.on(Events.MessageCreate, async (message: Message) => {
     if (message.author.bot) return //bot自身の発言を無視

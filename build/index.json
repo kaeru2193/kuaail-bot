@@ -41,7 +41,7 @@
   },
   {
     "cmd": "xingxi",
-    "help": "`!k frog`\nbotがかえるのなきまねをします。",
+    "help": "`!k xingxi`\nbotと雰語で話そう！",
     "path": "xingxi.js"
   }
 ]
