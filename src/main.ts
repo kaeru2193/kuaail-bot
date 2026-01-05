@@ -18,7 +18,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 client.once(Events.ClientReady, c => {
 	console.log(`${c.user.tag}でログインしました。`);
-	console.log(client.guilds.cache.size)
+	console.log(`参加サーバー数: ${client.guilds.cache.size}`)
 });
 
 client.login(TOKEN);

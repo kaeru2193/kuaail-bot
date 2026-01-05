@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { GoogleGenAI, createPartFromUri } from "@google/genai"
+import { GoogleGenAI, createPartFromUri, createUserContent } from "@google/genai"
 import fs from "fs"
 import path from "path"
 
@@ -12,7 +12,7 @@ const dayLimit = 10
 
 const resourceParh = "./assets/resources"
 
-const PROMPT = fs.readFileSync(path.join(resourceParh, "./xingxi-prompt.txt"), "utf-8")
+const PROMPT = fs.readFileSync(path.join(resourceParh, "./xingxi-prompt.txt"), "utf-8").split("----")
 const dictData = fs.readFileSync(path.join(__dirname, '../../assets/data/phun-dict.json'), "utf-8")
 const dict: any[] = JSON.parse(dictData).data
 
@@ -61,17 +61,17 @@ module.exports = {
         message.channel.sendTyping()
 
         const userName = names.find(n => n.id == message.author.id)
-        const userContent = `${userName ?userName :"anonymous" + message.author.id.slice(-4)}: ${PhunToCode(message.content)}` //雰名がある場合はそれを、無ければidの下四桁を使って識別
+        const userContent = `${userName ?userName.name :"anonymous" + message.author.id.slice(-4)}: ${PhunToCode(message.content)}` //雰名がある場合はそれを、無ければidの下四桁を使って識別
 
         console.log(userContent)
 
-        const res = await data.ai.models.generateContent({
-            model: "gemini-2.5-pro",
+        const res1 = await data.ai.models.generateContent({
+            model: "gemini-3-flash-preview",
             contents: [
                 {
                     role: 'user',
                     parts: [
-                        { text: PROMPT },
+                        { text: PROMPT[0] },
                         createPartFromUri(data.grammar.uri, data.grammar.mimeType),
                         createPartFromUri(data.dict.uri, data.dict.mimeType),
                         createPartFromUri(data.examples.uri, data.examples.mimeType)
@@ -90,7 +90,20 @@ module.exports = {
             },
         })
 
-        message.reply(CodeToPhun(res.text))
+        console.log(CodeToPhun(res1.text), res1.text)
+
+        const res2 = await data.ai.models.generateContent({ //二段目（誤りを訂正）
+            model: "gemini-2.5-flash",
+            contents: createUserContent([
+                createPartFromUri(data.grammar.uri, data.grammar.mimeType),
+                createPartFromUri(data.dict.uri, data.dict.mimeType),
+                createPartFromUri(data.examples.uri, data.examples.mimeType),
+                PROMPT[1] + "\n\n" + res1.text
+            ])
+        })
+
+        console.log(CodeToPhun(res2.text), res2.text)
+        message.reply(CodeToPhun(res2.text))
 
         data.history.push(
             {
@@ -99,7 +112,7 @@ module.exports = {
             },
             {
                 role: 'model',
-                parts: [{ text: res.text }]
+                parts: [{ text: res2.text }]
             }
         )
 
@@ -128,7 +141,7 @@ const PhunToCode = (text: string) => {
 }
 
 const CodeToPhun = (text: string) => {
-    return text.replace(/([^a-z\s])/g, (_, match) => ` ${match} `).split(" ").filter(c => c).map(c => {
+    return text.replace(/([^a-z\s]|\n)/g, (_, match) => ` ${match} `).split(" ").filter(c => c).map(c => {
         if (c == "\n") { return "\n" } //改行はそのまま
         if (marksCode.includes(c)) { return marksPhun[marksCode.indexOf(c)] } //記号を置換
 

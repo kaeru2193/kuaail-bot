@@ -1,4 +1,4 @@
-import fs, { writeFileSync } from "fs"
+import fs from "fs"
 import path from "path"
 
 const dictData = fs.readFileSync(path.join(__dirname, '../../assets/data/phun-dict.json'), "utf-8")
