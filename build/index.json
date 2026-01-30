@@ -25,6 +25,11 @@
     "path": "help.js"
   },
   {
+    "cmd": "kuowe",
+    "help": "`!k kuowe <文章> (<ボイス>)`\n入力された文章を雰語ttsで読み上げます。ボイスは1～4の数字で指定可能です。デフォルト値は`1`です。",
+    "path": "kuowe.js"
+  },
+  {
     "cmd": "vcjoin",
     "help": "`!k vcjoin`\nbotがVCに入ってサンプル音楽を再生します。",
     "path": "vcjoin.js"

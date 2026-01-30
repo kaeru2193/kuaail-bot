@@ -64,8 +64,11 @@ module.exports = {
         ctx.fillText(args[0], canvas.width / 2, canvas.height / 2);
 
         const buffer: any = canvas.toBuffer("image/png")
-        fs.writeFileSync("./img/funqo_img.png", buffer, {})
+        const fileName = `funqo_${Date.now() % 10000}.png` //一意なファイル名で管理
+        fs.writeFileSync(`./tmp/${fileName}`, buffer)
 
-        await message.reply({ files: ["./img/funqo_img.png"] })
+        await message.reply({ files: [`./tmp/${fileName}`] })
+
+        fs.unlinkSync(`./tmp/${fileName}`)
 	},
 }
