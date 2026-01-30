@@ -24,8 +24,8 @@ module.exports = {
 
         const phoneme = convertPron(args[0])
 
-        if (phoneme.split(" ").length > 50) {
-            await message.reply("文章が長すぎます。50音節以内で指定して下さい。")
+        if (phoneme.split(" ").length > 300) {
+            await message.reply("文章が長すぎます。300音節以内で指定して下さい。")
             return
         }
 
