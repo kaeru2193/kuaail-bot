@@ -2,8 +2,22 @@ import { Message } from "discord.js";
 import { GoogleGenAI, createPartFromUri, createUserContent } from "@google/genai"
 import fs from "fs"
 import path from "path"
+import { longMemory } from "../lib/types";
 
 import dotenv from 'dotenv'
+
+interface State {
+    history: {
+        role: string
+        parts: {
+            text: string
+        }[]
+    }[]
+    ai: GoogleGenAI
+    grammar: any
+    dict: any
+    examples: any
+}
 
 dotenv.config()
 const GEMINI_KEY = process.env.GEMINI_KEY
@@ -24,7 +38,7 @@ const marksCode = ",.!?“”‹›()–!?"
 module.exports = {
     cmd: "xingxi",
     help: "`!k xingxi`\nbotと雰語で話そう！",
-    execute: async (message: Message) => {
+    execute: async (message: Message): Promise<State|undefined> => {
         await message.reply('穏永！')
 
         const genAI = new GoogleGenAI({ apiKey: GEMINI_KEY })
@@ -43,10 +57,10 @@ module.exports = {
             examples: exampleFile
         }
     },
-    app: async (message: Message, data: any) => {
-        if (!message.channel.isSendable()) { return } //こんな状況は想定してないので、アプリを終了しても問題ない
+    app: async (message: Message, data: State): Promise<State|undefined> => {
+        if (!message.channel.isSendable()) { throw Error("xingxi:メッセージが送れません。") } //こんな状況は想定してないので、アプリを終了しても問題ない
 
-        const longMemory: any = JSON.parse(fs.readFileSync("./longMemory.json", "utf-8"))
+        const longMemory: longMemory = JSON.parse(fs.readFileSync("./longMemory.json", "utf-8"))
         const usedLog: string[] = longMemory.xingxiUsed
         const logKey = message.author.id + "/" + new Date().toLocaleDateString() //idと日付の組み合わせ
         const usedTimes = usedLog.filter(l => l == logKey).length //今日の使用回数
@@ -90,6 +104,7 @@ module.exports = {
             },
         })
 
+        if (!res1.text) {throw Error("xingxi:res1の応答が正しく帰ってきませんでした。")}
         console.log(CodeToPhun(res1.text), res1.text)
 
         const res2 = await data.ai.models.generateContent({ //二段目（誤りを訂正）
@@ -102,6 +117,7 @@ module.exports = {
             ])
         })
 
+        if (!res2.text) {throw Error("xingxi:res2の応答が正しく帰ってきませんでした。")}
         console.log(CodeToPhun(res2.text), res2.text)
         message.reply(CodeToPhun(res2.text))
 

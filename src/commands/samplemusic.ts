@@ -2,8 +2,8 @@ import { Message } from "discord.js";
 import { joinVoiceChannel, VoiceConnectionStatus, entersState, createAudioResource, StreamType, createAudioPlayer, AudioPlayerStatus, NoSubscriberBehavior } from "@discordjs/voice";
 
 module.exports = {
-    cmd: "vcjoin",
-    help: "`!k vcjoin`\nbotがVCに入ってサンプル音楽を再生します。",
+    cmd: "samplemusic",
+    help: "`!k samplemusic`\nbotがVCに入ってサンプル音楽を再生します。",
     execute: async (message: Message) => {
         if (!message.guild || !message.guildId) {
             await message.reply('ここはサーバーではありません。')

@@ -1,5 +1,11 @@
 import { Message } from "discord.js";
 
+interface State {
+    board: number[][],
+    msg: Message,
+    turns: number
+}
+
 const levels: any = { //難易度
     "easy": [6, 5],
     "normal": [8, 10],
@@ -10,7 +16,7 @@ const levels: any = { //難易度
 module.exports = {
 	cmd: "crossgame",
     help: "`!k crossgame <難易度>`\nボードゲーム「交返楽」を開始します。難易度はeasy, normal, hard, taingのいずれかから選択可能で、盤の全面を黒に揃えることでクリアとなります。\n`<行数> <列数>`の形式でひっくり返すコマを指定できます。また、行数と列数はともに1から、左上を起点に数えられます。複数手をまとめて`<行数1> <列数1> <行数2> <列数2>...`のように指定することも可能です。",
-	execute: async (message: Message, args: string[]) => {
+	execute: async (message: Message, args: string[]): Promise<State|undefined> => {
         const level = args[0]
         if (!Object.hasOwn(levels, level)) {
             await message.reply('難易度を正しく入力してください。')
@@ -22,10 +28,12 @@ module.exports = {
         await message.reply(`ゲーム開始！\n${toBoardText(board)}`)
 
         const messages = await message.channel.messages.fetch({ limit: 1 })
+        const botMessage = messages.get([...messages.keys()][0]) //botが最初に送った盤面
+        if (!botMessage) { throw new Error("crossgame:盤面メッセージが存在しませんでした。"); }
 		
-        return {board: board, msg: messages.get([...messages.keys()][0]), turns: 0}
+        return {board: board, msg: botMessage, turns: 0}
 	},
-    app: async (message: Message, data: any) => {
+    app: async (message: Message, data: State): Promise<State|undefined> => {
         const moves = message.content.split(" ").map(a => Number(a))
         if (moves.some(m => isNaN(m))) {
             await message.reply('引数に数値を入力してください。')

@@ -1,17 +1,28 @@
 import { Message } from "discord.js";
 import fs from "fs"
+import { getDict } from "../lib/funcs";
+
+interface State {
+    chara: {
+        chara: string
+        pron: string
+        meaning: string
+    }
+    number: number
+    score: number
+}
 
 module.exports = {
     cmd: "wefuyao",
     help: "`!k wefuyao`\n雰字の漢字転写から読みを答えるクイズを開始します。回答は数字式雰拼で入力してください。",
-    execute: async (message: Message) => {
+    execute: async (message: Message): Promise<State|undefined> => {
         const dict = getDict()
 
         const chara = selectChara(dict)
         await message.reply(`ゲーム開始！十問出題するよ！\n――――\n**第1問:** ${chara.chara}`)
         return {chara: chara, number: 1, score: 0}
     },
-    app: async (message: Message, data: any) => {
+    app: async (message: Message, data: State): Promise<State|undefined> => {
         const dict = getDict()
         let content = ""
 
@@ -38,11 +49,6 @@ module.exports = {
             return data
         }
     },
-}
-
-const getDict = () => {
-    const dict: any[] = JSON.parse(fs.readFileSync("./assets/data/phun-dict.json", "utf-8")).data
-    return dict
 }
 
 const selectChara = (dict: any[]) => {

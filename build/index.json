@@ -30,9 +30,14 @@
     "path": "kuowe.js"
   },
   {
-    "cmd": "vcjoin",
-    "help": "`!k vcjoin`\nbotがVCに入ってサンプル音楽を再生します。",
-    "path": "vcjoin.js"
+    "cmd": "samplemusic",
+    "help": "`!k samplemusic`\nbotがVCに入ってサンプル音楽を再生します。",
+    "path": "samplemusic.js"
+  },
+  {
+    "cmd": "tts",
+    "help": "`!k tts`\nbotがVCのテキストを読み上げます。",
+    "path": "tts.js"
   },
   {
     "cmd": "vcleave",

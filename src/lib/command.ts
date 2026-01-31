@@ -1,6 +1,7 @@
 import { Message } from "discord.js"
 import fs from "fs"
 import path from "path"
+import { getVoiceConnection } from "@discordjs/voice"
 
 const commandData: any[] = JSON.parse(fs.readFileSync("build/index.json", 'utf8'))
 const commandsPath = path.join(__dirname, '../commands')
@@ -37,6 +38,7 @@ export const command = async (message: Message) => { //初回呼びかけの処�
 
 export const app = async (message: Message, previousData: any) => { //アプリ起動中の処理
     if (message.content == "stop") { //stopと入力されたらコマンド終了
+        leaveVC(message)
         message.reply('アプリを中断しました。')
         return
     }
@@ -75,9 +77,21 @@ const notExistCommand = async (message: Message) => {
 const internalError = async (message: Message, e: any) => {
     await message.reply(':hot_face: 内部エラーです。必要な場合は管理者にお問い合わせください。')
     console.log(e)
+    
+    if (!message.guildId) { return }
+    const connection = getVoiceConnection(message.guildId)
+    if (connection) { connection.destroy() } //botがVCに入っていたら切断する
 }
 
 const appInternalError = async (message: Message, e: any) => {
     await message.reply(':hot_face: 内部エラーが発生したため、アプリを終了します。必要な場合は管理者にお問い合わせください。')
     console.log(e)
+    
+    leaveVC(message)
+}
+
+const leaveVC = async (message: Message) => {
+    if (!message.guildId) { return }
+    const connection = getVoiceConnection(message.guildId)
+    if (connection) { connection.destroy() } //botがVCに入っていたら切断する
 }
