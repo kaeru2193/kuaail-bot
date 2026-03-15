@@ -57,8 +57,15 @@ const result = dict.map(e => {
 }).join("\n")
 
 const exampleResult = example.map(e => {
-    const words: string[] = e.words
-    const codeSentence = words.join("").split("").filter(c => c != " ").map(c => charaToCode(c)).join(" ")
+    const words: {parts: {text: string}[]}[] = e.words
+    const codeSentence = words
+        .map(w => w.parts
+            .map(p => p.text).join("")
+        ).join("")
+        .split("")
+        .filter(c => c != " ")
+        .map(c => charaToCode(c))
+        .join(" ")
     return `${codeSentence} / ${e.ja}`
 }).join("\n")
 
